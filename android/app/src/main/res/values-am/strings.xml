@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">ጆብሀንተር ኢትዮጵያ</string>
+    <string name="nav_home">መነሻ</string>
+    <string name="nav_discover">ስራዎች</string>
+    <string name="nav_saved">የተቀመጡ</string>
+    <string name="nav_applications">ማመልከቻዎች</string>
+    <string name="nav_profile">መገለጫ</string>
+
+    <string name="screen_onboarding">እንኳን ደህና መጡ</string>
+    <string name="screen_discover">ስራዎችን ፈልግ</string>
+    <string name="screen_search">ፍለጋ እና ማጣሪያዎች</string>
+    <string name="screen_job_details">የስራ ዝርዝር</string>
+    <string name="screen_ai_matching">የAI ስራ ማዛመድ</string>
+    <string name="screen_cv_manager">የሲቪ አስተዳዳሪ</string>
+    <string name="screen_saved">የተቀመጡ ስራዎች</string>
+    <string name="screen_application_tracker">የማመልከቻ መከታተያ</string>
+    <string name="screen_notifications">ማሳወቂያዎች</string>
+    <string name="screen_ai_assistant">የAI ሙያ ረዳት</string>
+    <string name="screen_job_sources">የስራ ምንጮች</string>
+    <string name="screen_settings">ቅንብሮች እና መገለጫ</string>
+
+    <string name="badge_cached">የተቀመጠ</string>
+    <string name="badge_verified">የተረጋገጠ</string>
+    <string name="apply_now">በዋናው ድረ-ገጽ አመልክት</string>
+    <string name="save_job">ስራ አስቀምጥ</string>
+    <string name="saved_job">ተቀምጧል</string>
+    <string name="search_hint">የስራ ርዕስ፣ ክህሎት፣ አሰሪ…</string>
+    <string name="offline_banner">ያለ ኢንተርኔት በመስራት ላይ — የተቀመጠ መረጃ</string>
+    <string name="last_verified">ለመጨረሻ ጊዜ የተረጋገጠ</string>
+    <string name="scam_warning_title">የዝርዝሩ ማስጠንቀቂያዎች</string>
+    <string name="match_disclaimer">አውቶማቲክ የተኳኋኝነት ግምት — የቅጥር ዕድል አይደለም።</string>
+</resources>

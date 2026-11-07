@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">JobHunter Ethiopia</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_discover">Discover</string>
+    <string name="nav_saved">Saved</string>
+    <string name="nav_applications">Applications</string>
+    <string name="nav_profile">Profile</string>
+
+    <string name="screen_onboarding">Onboarding</string>
+    <string name="screen_discover">Discover Jobs</string>
+    <string name="screen_search">Search &amp; Filters</string>
+    <string name="screen_job_details">Job Details</string>
+    <string name="screen_ai_matching">AI Job Matching</string>
+    <string name="screen_cv_manager">CV Manager</string>
+    <string name="screen_saved">Saved Jobs</string>
+    <string name="screen_application_tracker">Application Tracker</string>
+    <string name="screen_notifications">Notifications</string>
+    <string name="screen_ai_assistant">AI Career Assistant</string>
+    <string name="screen_job_sources">Job Sources</string>
+    <string name="screen_settings">Settings &amp; Profile</string>
+
+    <string name="badge_cached">Cached</string>
+    <string name="badge_verified">Verified</string>
+    <string name="apply_now">Apply on original site</string>
+    <string name="save_job">Save job</string>
+    <string name="saved_job">Saved</string>
+    <string name="search_hint">Job title, skill, employer…</string>
+    <string name="offline_banner">Working offline — showing cached data</string>
+    <string name="last_verified">Last verified</string>
+    <string name="scam_warning_title">Listing flags</string>
+    <string name="match_disclaimer">Automated compatibility estimate — not a probability of employment.</string>
+</resources>
