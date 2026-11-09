@@ -43,8 +43,19 @@ fun HomeScreen(vm: HomeViewModel, onOpenJob: (String) -> Unit, onSearch: () -> U
                 Text("${jobs.size} opportunities", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 TextButton(onClick = { vm.refresh() }) { Text("Refresh") }
             }
-            LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                items(jobs, key = { it.id }) { JobCard(it, onClick = { onOpenJob(it.id) }) }
+            if (jobs.isEmpty()) {
+                Column(Modifier.fillMaxSize().padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    Icon(Icons.Default.CloudOff, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(48.dp))
+                    Spacer(Modifier.height(12.dp))
+                    Text("No jobs are cached yet", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text("Tap Refresh to connect to the live job API.", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                    Spacer(Modifier.height(12.dp))
+                    Button(onClick = { vm.refresh() }) { Text("Load jobs") }
+                }
+            } else {
+                LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    items(jobs, key = { it.id }) { JobCard(it, onClick = { onOpenJob(it.id) }) }
+                }
             }
         }
     }

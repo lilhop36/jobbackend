@@ -21,7 +21,13 @@ class HomeViewModel(private val c: AppContainer) : ViewModel() {
     fun refresh() {
         viewModelScope.launch {
             _refreshing.value = true
-            c.jobs.refresh().onFailure { _message.value = "Working offline — showing cached data" }
+            c.jobs.refresh()
+                .onSuccess { count ->
+                    _message.value = if (count > 0) "Loaded $count jobs from the live API" else "The API returned no active jobs"
+                }
+                .onFailure { error ->
+                    _message.value = "Could not load live jobs: ${error.message ?: error.javaClass.simpleName}. Showing cached data."
+                }
             _refreshing.value = false
         }
     }
