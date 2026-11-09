@@ -1,0 +1,364 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Source {
+  id             String               @id
+  name           String
+  type           String
+  baseUrl        String
+  enabled        Boolean              @default(true)
+  pollIntervalMin Int                 @default(360)
+  lastSyncAt     DateTime?
+  lastSyncStatus String?
+  jobCount       Int                  @default(0)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  jobs     JobSourceReference[]
+  syncLogs SourceSyncLog[]
+}
+
+model SourceSyncLog {
+  id           String    @id @default(uuid())
+  sourceId     String
+  status       String
+  itemsFetched Int       @default(0)
+  itemsAdded   Int       @default(0)
+  itemsUpdated Int       @default(0)
+  durationMs   Int       @default(0)
+  errorMessage String?
+  startedAt    DateTime  @default(now())
+
+  source Source @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@index([sourceId, startedAt])
+}
+
+model Job {
+  id                      String    @id @default(uuid())
+  title                   String
+  employer                String
+  employerWebsite         String?
+  description             String
+  descriptionPlain        String?
+  requirementsJson        String?
+  skills                  String?
+  sector                  String
+  region                  String
+  city                    String?
+  locationRaw             String
+  employmentType          String    @default("FULL_TIME")
+  experienceLevel         String?
+  educationLevel          String    @default("NOT_SPECIFIED")
+  salaryMin               Decimal?
+  salaryMax               Decimal?
+  currency                String    @default("ETB")
+  salaryRaw               String?
+  publishedAt             DateTime?
+  deadline                DateTime?
+  firstDiscoveredAt        DateTime  @default(now())
+  lastVerifiedAt          DateTime  @default(now())
+  originalUrl             String
+  applicationUrl          String?
+  applicationMethod       String?
+  applicationInstructions String?
+  sourceAttribution       String
+  verificationStatus      String    @default("UNVERIFIED")
+  expirationStatus        String    @default("ACTIVE")
+  clusterId               String?
+
+  cluster          JobDuplicateCluster? @relation(fields: [clusterId], references: [id], onDelete: SetNull)
+  sourceReferences JobSourceReference[]
+  riskFlags        RiskFlag[]
+  applications     ApplicationRecord[]
+  savedBy          SavedJob[]
+  matches          JobMatchCache[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([region])
+  @@index([sector])
+  @@index([deadline])
+  @@index([expirationStatus])
+  @@index([employer])
+  @@index([sourceAttribution])
+}
+
+model JobSourceReference {
+  id         String   @id @default(uuid())
+  jobId      String
+  sourceId   String
+  sourceJobId String?
+  url        String
+  fetchedAt  DateTime @default(now())
+
+  job    Job    @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  source Source @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@unique([sourceId, sourceJobId])
+  @@index([jobId])
+}
+
+model JobDuplicateCluster {
+  id          String   @id @default(uuid())
+  canonicalId String?
+  reason      String
+  confidence  Decimal
+  createdAt   DateTime @default(now())
+
+  jobs Job[]
+}
+
+model RiskFlag {
+  id        String   @id @default(uuid())
+  jobId     String
+  code      String
+  severity  String
+  reason    String
+  evidence  String?
+  createdAt DateTime @default(now())
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+}
+
+model UserReport {
+  id        String   @id @default(uuid())
+  jobId     String
+  userId    String?
+  category  String
+  notes     String?
+  createdAt DateTime @default(now())
+
+  @@index([jobId])
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String?  @unique
+  phone        String?
+  passwordHash String?
+  language     String   @default("en")
+  regions      String?
+  sectors      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  cvProfiles    CvProfile[]
+  applications  ApplicationRecord[]
+  savedJobs     SavedJob[]
+  savedSearches SavedSearch[]
+  notifications NotificationHistory[]
+  consentLogs   ConsentLog[]
+  aiUsage       AiUsageLog[]
+}
+
+model CvProfile {
+  id               String   @id @default(uuid())
+  userId           String
+  title            String
+  fullName         String?
+  email            String?
+  phone            String?
+  location         String?
+  summary          String?
+  rawText          String?
+  originalFileUrl  String?
+  originalFileName String?
+  isDefault        Boolean  @default(false)
+  userVerified     Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  education    CvEducation[]
+  experience   CvExperience[]
+  skills       CvSkill[]
+  applications ApplicationRecord[]
+  matches      JobMatchCache[]
+
+  @@index([userId])
+}
+
+model CvEducation {
+  id          String   @id @default(uuid())
+  cvId        String
+  institution String
+  degree      String
+  field       String?
+  level       String   @default("NOT_SPECIFIED")
+  cgpa        Decimal?
+  startYear   Int?
+  endYear     Int?
+
+  cv CvProfile @relation(fields: [cvId], references: [id], onDelete: Cascade)
+
+  @@index([cvId])
+}
+
+model CvExperience {
+  id          String   @id @default(uuid())
+  cvId        String
+  employer    String
+  title       String
+  location    String?
+  startDate   DateTime?
+  endDate     DateTime?
+  isCurrent   Boolean  @default(false)
+  isInternship Boolean @default(false)
+  description String?
+
+  cv CvProfile @relation(fields: [cvId], references: [id], onDelete: Cascade)
+
+  @@index([cvId])
+}
+
+model CvSkill {
+  id       String  @id @default(uuid())
+  cvId     String
+  name     String
+  category String?
+  level    String?
+
+  cv CvProfile @relation(fields: [cvId], references: [id], onDelete: Cascade)
+
+  @@index([cvId])
+}
+
+model JobMatchCache {
+  id                  String   @id @default(uuid())
+  cvId                String
+  jobId               String
+  contentHash         String
+  score               Decimal
+  educationScore      Decimal
+  skillsScore         Decimal
+  experienceScore     Decimal
+  strongMatches       String
+  missingRequirements String
+  partialRequirements String
+  unknownRequirements String
+  disqualifiers       String
+  aiExplanation       String?
+  providerUsed        String?
+  calculatedAt        DateTime @default(now())
+
+  cv  CvProfile @relation(fields: [cvId], references: [id], onDelete: Cascade)
+  job Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([cvId, jobId])
+  @@index([jobId])
+  @@index([contentHash])
+}
+
+model ApplicationRecord {
+  id            String    @id @default(uuid())
+  userId        String
+  jobId         String?
+  cvId          String?
+  employer      String
+  jobTitle      String
+  status        String    @default("INTERESTED")
+  appliedAt     DateTime?
+  cvVersion     String?
+  coverLetter   String?
+  followUpDate  DateTime?
+  interviewDate DateTime?
+  notes         String?
+  history       String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job?       @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  cv   CvProfile? @relation(fields: [cvId], references: [id], onDelete: SetNull)
+
+  @@index([userId, status])
+  @@index([followUpDate])
+  @@index([interviewDate])
+}
+
+model SavedJob {
+  id        String   @id @default(uuid())
+  userId    String
+  jobId     String
+  notes     String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job  Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([userId])
+}
+
+model SavedSearch {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  filters   String
+  notify    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model NotificationHistory {
+  id        String    @id @default(uuid())
+  userId    String
+  type      String
+  title     String
+  body      String
+  data      String?
+  sentAt    DateTime  @default(now())
+  readAt    DateTime?
+  dedupeKey String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([dedupeKey])
+  @@index([userId, sentAt])
+}
+
+model AiUsageLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  provider  String
+  model     String
+  task      String
+  tokensIn  Int      @default(0)
+  tokensOut Int      @default(0)
+  costUsd   Decimal?
+  latencyMs Int      @default(0)
+  success   Boolean  @default(true)
+  error     String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([provider, createdAt])
+  @@index([task])
+}
+
+model ConsentLog {
+  id        String   @id @default(uuid())
+  userId    String
+  scope     String
+  provider  String
+  granted   Boolean
+  grantedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, scope])
+}

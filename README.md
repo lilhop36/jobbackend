@@ -9,6 +9,8 @@ A complete, production-grade job aggregation and career assistant platform for E
 - **Verified Ethiopian job source catalog** with evidence per source (EthioNGOJobs, ReliefWeb, WHO Stellis, Ethiopian Reporter Jobs, Ethiojobs, HahuJobs, Dereja, and more)
 - **AI provider catalog** (NVIDIA NIM, Groq, Mistral) with cost-optimized task allocations and fallback chain
 
+Render deployment configuration and free-tier limitations are documented in [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md). The root `render.yaml` provisions a Node web service plus PostgreSQL and runs Prisma migrations before deploy.
+
 ## Repository Layout
 
 ```
@@ -38,8 +40,8 @@ jobhunter-ethiopia/
 ```bash
 cd backend
 pnpm install
-pnpx prisma generate
-DATABASE_URL="file:./prisma/dev.db" pnpx prisma db push
+pnpm prisma:generate:sqlite
+pnpm prisma:push
 pnpm test                          # 29 tests, all passing
 pnpm build && node dist/src/main.js # API on http://localhost:3000
 ```

@@ -1,0 +1,50 @@
+services:
+  - type: web
+    name: jobhunter-ethiopia-api
+    runtime: node
+    plan: free
+    region: frankfurt
+    rootDir: backend
+    buildCommand: pnpm install --frozen-lockfile && pnpm prisma:generate && pnpm build
+    preDeployCommand: pnpm prisma:migrate:deploy
+    startCommand: pnpm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CORS_ORIGIN
+        value: '*'
+      - key: AUTO_SYNC
+        value: 'true'
+      - key: ENABLE_PERIODIC_SYNC
+        value: 'false'
+      - key: SYNC_INTERVAL_HOURS
+        value: '6'
+      - key: JOB_EXPIRY_DAYS
+        value: '60'
+      - key: DATABASE_URL
+        fromDatabase:
+          name: jobhunter-ethiopia-db
+          property: connectionString
+      - key: GROQ_API_KEY
+        sync: false
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: MISTRAL_API_KEY
+        sync: false
+      - key: AI_PRIMARY_PROVIDER
+        value: groq
+      - key: AI_SECONDARY_PROVIDER
+        value: nvidia
+      - key: AI_TERTIARY_PROVIDER
+        value: mistral
+      - key: RELIEFWEB_APPNAME
+        value: jobhunter-ethiopia
+
+databases:
+  - name: jobhunter-ethiopia-db
+    plan: free
+    region: frankfurt
+    databaseName: jobhunter
+    user: jobhunter

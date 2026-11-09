@@ -10,8 +10,10 @@
     "start": "node dist/src/main.js",
     "test": "vitest run --coverage.enabled=false",
     "sync": "tsx src/sync/runSync.ts",
-    "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push"
+    "prisma:generate": "prisma generate --schema=prisma/schema.prisma",
+    "prisma:generate:sqlite": "prisma generate --schema=prisma/schema.sqlite.prisma",
+    "prisma:push": "prisma db push --schema=prisma/schema.sqlite.prisma",
+    "prisma:migrate:deploy": "prisma migrate deploy --schema=prisma/schema.prisma"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
