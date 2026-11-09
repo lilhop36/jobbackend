@@ -5,8 +5,7 @@ services:
     plan: free
     region: frankfurt
     rootDir: backend
-    buildCommand: pnpm install --frozen-lockfile && pnpm prisma:generate && pnpm build
-    preDeployCommand: pnpm prisma:migrate:deploy
+    buildCommand: pnpm install --frozen-lockfile && pnpm prisma:generate && pnpm prisma:migrate:deploy && pnpm build
     startCommand: pnpm start
     healthCheckPath: /api/health
     autoDeploy: true
