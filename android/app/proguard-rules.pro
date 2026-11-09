@@ -9,10 +9,10 @@
 -dontwarn okio.**
 
 # Gson
+-keep class com.manus.jobhunter.ethiopia.data.remote.** { *; }
 -keepclassmembers,allowobfuscation class * {
     @com.google.gson.annotations.SerializedName <fields>;
 }
--keep class com.manus.jobhunter.ethiopia.data.remote.model.** { *; }
 
 # Room
 -keep class * extends androidx.room.RoomDatabase
