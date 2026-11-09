@@ -11,6 +11,8 @@ A complete, production-grade job aggregation and career assistant platform for E
 
 Render deployment configuration and free-tier limitations are documented in [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md). The root `render.yaml` provisions a Node web service plus PostgreSQL and runs Prisma migrations before deploy.
 
+Live API: `https://jobhunter-ethiopia-api.onrender.com/api/` · Health: `https://jobhunter-ethiopia-api.onrender.com/api/health`
+
 ## Repository Layout
 
 ```

@@ -5,30 +5,33 @@ This repository includes `render.yaml` for a Render Blueprint containing:
 - one Node.js web service rooted at `backend/`;
 - one Render PostgreSQL database;
 - Prisma Client generation during build;
-- `prisma migrate deploy` before each deploy;
+- PostgreSQL migrations during the free-compatible build command;
 - HTTP health checks at `/api/health`;
 - secrets declared as unsynchronized environment variables.
 
-## Deploy
+## Deployed service
 
-1. Push this repository to GitHub.
-2. In Render, choose **New → Blueprint**.
-3. Select `lilhop36/jobbackend` and the `master` branch.
-4. Review the generated resources before applying the Blueprint.
-5. Enter `GROQ_API_KEY`, `NVIDIA_API_KEY`, and/or `MISTRAL_API_KEY` manually when prompted. Do not commit these values.
-6. Apply the Blueprint and wait for the first migration and deploy to complete.
+The Blueprint was deployed successfully from `lilhop36/jobbackend`, branch `main`.
 
-The Android API base URL will be:
+- Public API: `https://jobhunter-ethiopia-api.onrender.com`
+- Health check: `https://jobhunter-ethiopia-api.onrender.com/api/health`
+- Android base URL: `https://jobhunter-ethiopia-api.onrender.com/api/`
+- Verified health response: HTTP 200, database `up`
+- Verified jobs response: 10 jobs available, 3 returned with `limit=3`
+- Verified source response: 14 sources, 13 healthy
 
-```text
-https://jobhunter-ethiopia-api.onrender.com/api/
-```
+## Deploy or update
 
-Render may assign a different service name or URL if the name is already taken. Use the actual URL shown in the Render dashboard.
+1. Push changes to the `main` branch.
+2. Render automatically syncs the Blueprint and deploys the web service.
+3. Monitor the deployment from the Render Blueprint page.
+4. Check the health endpoint after each deployment.
+
+AI keys are configured manually in Render under the service environment settings. Do not commit them.
 
 ## Database strategy
 
-Production uses PostgreSQL and the committed initial migration in `backend/prisma/migrations/20261109164500_init_postgresql/`. Deployments use `prisma migrate deploy`; they do not use `prisma db push`.
+Production uses PostgreSQL and the committed initial migration in `backend/prisma/migrations/20261109164500_init_postgresql/`. Deployments use `prisma migrate deploy` during the build command; they do not use `prisma db push`.
 
 Local development retains SQLite in `backend/prisma/schema.sqlite.prisma`. Use:
 

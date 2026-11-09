@@ -19,7 +19,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
 
-        buildConfigField("String", "API_BASE_URL", "\"http://127.0.0.1:3000/api/\"")
+        buildConfigField("String", "API_BASE_URL", "\"https://jobhunter-ethiopia-api.onrender.com/api/\"")
     }
 
     signingConfigs {
@@ -45,7 +45,7 @@ android {
             applicationIdSuffix = ".debug"
             isDebuggable = true
             signingConfig = signingConfigs.getByName("debug")
-            buildConfigField("String", "API_BASE_URL", "\"http://127.0.0.1:3000/api/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://jobhunter-ethiopia-api.onrender.com/api/\"")
         }
     }
 
